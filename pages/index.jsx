@@ -12,7 +12,7 @@ export default function HomePage() {
   return (
     <div className="h-screen bg-zinc-900 text-zinc-200 flex flex-col">
       <header className="flex justify-between items-center p-6 bg-zinc-800">
-        <h1 className="text-xl font-bold">Company Name</h1>
+        <h1 className="text-xl font-bold">Techizons</h1>
         <nav>
           <a href="#features" className="px-4 hover:underline">
             Features

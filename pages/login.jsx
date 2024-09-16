@@ -58,7 +58,7 @@ export default function LoginPage() {
         </form>
         <p className="text-zinc-400 text-center mt-4">
           Forgot your password?{" "}
-          <a href="#" className="text-blue-500 hover:underline">
+          <a href="/request-otp" className="text-blue-500 hover:underline">
             Reset here
           </a>
         </p>
