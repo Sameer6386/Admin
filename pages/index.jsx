@@ -13,17 +13,6 @@ export default function HomePage() {
     <div className="h-screen bg-zinc-900 text-zinc-200 flex flex-col">
       <header className="flex justify-between items-center p-6 bg-zinc-800">
         <h1 className="text-xl font-bold">Techizons</h1>
-        <nav>
-          <a href="#features" className="px-4 hover:underline">
-            Features
-          </a>
-          <a href="#about" className="px-4 hover:underline">
-            About Us
-          </a>
-          <a href="#contact" className="px-4 hover:underline">
-            Contact
-          </a>
-        </nav>
       </header>
 
       <main className="flex-1 flex flex-col justify-center items-center">

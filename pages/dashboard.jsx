@@ -1,15 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { FaEye, FaEdit, FaTrashAlt } from "react-icons/fa";
-import {
-  LineChart,
-  Line,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 
 const OverviewCard = ({ title, value }) => (
   <div className="bg-zinc-800 p-4 rounded-lg text-center">

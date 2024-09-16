@@ -17,19 +17,21 @@ const RequestOTP = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center mb-6">Request OTP</h2>
+    <div className="min-h-screen flex items-center justify-center bg-zinc-900">
+      <div className="w-full max-w-md bg-zinc-800 p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl text-white font-bold text-center mb-6">
+          Request OTP
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-white">
               Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mt-1 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full p-3 border border-gray-500 bg-zinc-700 text-white rounded-lg mt-1 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Enter your email"
               required
             />
