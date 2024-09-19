@@ -27,7 +27,7 @@ export default function LoginPage() {
     <div className="h-screen flex">
       <div
         className="w-1/2 bg-cover bg-center"
-        style={{ backgroundImage: "url('/assets/login.png')" }} // Corrected path
+        style={{ backgroundImage: "url('/assets/login.jpg')" }}
       ></div>
       <div className="w-1/2 flex justify-center items-center bg-zinc-900">
         <div className="w-full max-w-md bg-zinc-800 p-6 rounded-lg">
