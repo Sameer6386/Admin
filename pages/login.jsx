@@ -28,9 +28,7 @@ export default function LoginPage() {
       <div
         className="w-1/2 bg-cover bg-center"
         style={{ backgroundImage: "url('/assets/login.png')" }} // Corrected path
-      >
-        {/* Image background */}
-      </div>
+      ></div>
       <div className="w-1/2 flex justify-center items-center bg-zinc-900">
         <div className="w-full max-w-md bg-zinc-800 p-6 rounded-lg">
           <h2 className="text-2xl font-bold text-center mb-6 text-white">

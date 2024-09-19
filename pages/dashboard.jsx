@@ -14,7 +14,6 @@ export default function Dashboard() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [editableEmployee, setEditableEmployee] = useState(null);
   const [employeeToDelete, setEmployeeToDelete] = useState(null);
@@ -26,7 +25,9 @@ export default function Dashboard() {
     status: "",
     profileType: "",
   });
-  const [activeSection, setActiveSection] = useState("employees");
+  const [activeSection, setActiveSection] = useState("overview");
+  const [currentPage, setCurrentPage] = useState(1);
+  const employeesPerPage = 5;
 
   const [employees, setEmployees] = useState([
     {
@@ -37,36 +38,100 @@ export default function Dashboard() {
       status: "Active",
       profileType: "Self",
     },
-    // ... (other employees)
+    {
+      name: "Ayushi",
+      email: "aayushi@gmail.com",
+      contact: "1234567890",
+      position: "Sales",
+      status: "Active",
+      profileType: "Self",
+    },
+    {
+      name: "Rohit Sharma",
+      email: "rohit.sharma@gmail.com",
+      contact: "9876543210",
+      position: "Marketing",
+      status: "On Leave",
+      profileType: "Manager",
+    },
+    {
+      name: "Surbhi Jain",
+      email: "surbhi.jain@gmail.com",
+      contact: "7896541230",
+      position: "HR",
+      status: "Active",
+      profileType: "Self",
+    },
+    {
+      name: "Aditya Verma",
+      email: "aditya.verma@gmail.com",
+      contact: "6789453120",
+      position: "IT",
+      status: "Active",
+      profileType: "Admin",
+    },
+    {
+      name: "Neha Kapoor",
+      email: "neha.kapoor@gmail.com",
+      contact: "8907654321",
+      position: "Finance",
+      status: "On Leave",
+      profileType: "Self",
+    },
+    {
+      name: "Karan Mehta",
+      email: "karan.mehta@gmail.com",
+      contact: "9123456789",
+      position: "Sales",
+      status: "Active",
+      profileType: "Manager",
+    },
+    {
+      name: "Sneha Gupta",
+      email: "sneha.gupta@gmail.com",
+      contact: "8012345678",
+      position: "IT",
+      status: "Active",
+      profileType: "Self",
+    },
+    {
+      name: "Vikram Singh",
+      email: "vikram.singh@gmail.com",
+      contact: "7890123456",
+      position: "Marketing",
+      status: "On Leave",
+      profileType: "Manager",
+    },
+    {
+      name: "Priya Malhotra",
+      email: "priya.malhotra@gmail.com",
+      contact: "8901234567",
+      position: "HR",
+      status: "Active",
+      profileType: "Self",
+    },
+    {
+      name: "Rahul Agarwal",
+      email: "rahul.agarwal@gmail.com",
+      contact: "6789012345",
+      position: "Finance",
+      status: "Active",
+      profileType: "Admin",
+    },
   ]);
 
-  const notifications = [
-    "New employee added.",
-    "3 employees are inactive.",
-    "A project deadline is approaching.",
-  ];
-
-  const activities = [
-    "Ayushi added a new project.",
-    "Pankaj updated his contact details.",
-    "Himanshu was marked as inactive.",
-  ];
-
-  const data = [
-    { name: "Jan", employees: 20 },
-    { name: "Feb", employees: 25 },
-    { name: "Mar", employees: 22 },
-    { name: "Apr", employees: 30 },
-  ];
+  // Calculate employees to show based on the current page
+  const indexOfLastEmployee = currentPage * employeesPerPage;
+  const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
+  const currentEmployees = employees.slice(
+    indexOfFirstEmployee,
+    indexOfLastEmployee
+  );
+  const totalPages = Math.ceil(employees.length / employeesPerPage);
 
   const openDetailModal = (employee) => {
     setSelectedEmployee(employee);
     setIsDetailModalOpen(true);
-  };
-
-  const closeDetailModal = () => {
-    setIsDetailModalOpen(false);
-    setSelectedEmployee(null);
   };
 
   const openEditModal = (employee) => {
@@ -74,19 +139,9 @@ export default function Dashboard() {
     setIsEditModalOpen(true);
   };
 
-  const closeEditModal = () => {
-    setIsEditModalOpen(false);
-    setEditableEmployee(null);
-  };
-
   const openDeleteConfirm = (employee) => {
     setEmployeeToDelete(employee);
     setIsDeleteConfirmOpen(true);
-  };
-
-  const closeDeleteConfirm = () => {
-    setIsDeleteConfirmOpen(false);
-    setEmployeeToDelete(null);
   };
 
   const openAddModal = () => {
@@ -101,19 +156,16 @@ export default function Dashboard() {
     setIsAddModalOpen(true);
   };
 
-  const closeAddModal = () => {
-    setIsAddModalOpen(false);
-  };
-
-  const handleEditChange = (e) => {
-    const { name, value } = e.target;
-    setEditableEmployee((prev) => ({ ...prev, [name]: value }));
+  const handleAddSubmit = (e) => {
+    e.preventDefault();
+    setEmployees([...employees, newEmployee]);
+    closeAddModal();
   };
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    setEmployees((prevEmployees) =>
-      prevEmployees.map((emp) =>
+    setEmployees((prev) =>
+      prev.map((emp) =>
         emp.email === editableEmployee.email ? editableEmployee : emp
       )
     );
@@ -121,21 +173,25 @@ export default function Dashboard() {
   };
 
   const handleDeleteConfirm = () => {
-    setEmployees((prevEmployees) =>
-      prevEmployees.filter((emp) => emp.email !== employeeToDelete.email)
+    setEmployees((prev) =>
+      prev.filter((emp) => emp.email !== employeeToDelete.email)
     );
     closeDeleteConfirm();
+  };
+
+  const closeDetailModal = () => setIsDetailModalOpen(false);
+  const closeEditModal = () => setIsEditModalOpen(false);
+  const closeDeleteConfirm = () => setIsDeleteConfirmOpen(false);
+  const closeAddModal = () => setIsAddModalOpen(false);
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditableEmployee((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleAddChange = (e) => {
     const { name, value } = e.target;
     setNewEmployee((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddSubmit = (e) => {
-    e.preventDefault();
-    setEmployees((prevEmployees) => [...prevEmployees, newEmployee]);
-    closeAddModal();
   };
 
   return (
@@ -145,118 +201,63 @@ export default function Dashboard() {
           <h2 className="text-lg font-bold">Dashboard</h2>
           <ul className="mt-4">
             <li
-              className={`py-2 px-3 rounded ${activeSection === "employees" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
-              onClick={() => setActiveSection("employees")}
+              onClick={() => setActiveSection("overview")}
+              className={`py-2 px-3 rounded ${activeSection === "overview" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
             >
-              <a href="#">Employees</a>
+              Overview
             </li>
             <li
-              className={`py-2 px-3 rounded ${activeSection === "employees" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
               onClick={() => setActiveSection("employees")}
+              className={`py-2 px-3 rounded ${activeSection === "employees" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
             >
-              <a href="#">Leads</a>
+              Employees
             </li>
             <li
-              className={`py-2 px-3 rounded ${activeSection === "employees" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
-              onClick={() => setActiveSection("employees")}
+              onClick={() => setActiveSection("leads")}
+              className={`py-2 px-3 rounded ${activeSection === "Leads" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
             >
-              <a href="#">Inquires</a>
+              Leads
             </li>
             <li
-              className={`py-2 px-3 rounded ${activeSection === "employees" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
-              onClick={() => setActiveSection("employees")}
+              onClick={() => setActiveSection("Projects")}
+              className={`py-2 px-3 rounded ${activeSection === "Projects" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
             >
-              <a href="#">feedBack</a>
+              Projects
             </li>
             <li
-              className={`py-2 px-3 rounded ${activeSection === "employees" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
-              onClick={() => setActiveSection("employees")}
+              onClick={() => setActiveSection("Inquires")}
+              className={`py-2 px-3 rounded ${activeSection === "Inquires" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
             >
-              <a href="#">Settings</a>
+              Inquires
+            </li>
+            <li
+              onClick={() => setActiveSection("Feedback")}
+              className={`py-2 px-3 rounded ${activeSection === "Feedback" ? "bg-zinc-900" : "hover:bg-zinc-700"}`}
+            >
+              Feedback
             </li>
           </ul>
         </div>
       </aside>
 
       <main className="flex-1 p-6 bg-zinc-900">
-        <header className="flex justify-between items-center mb-4">
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="border border-zinc-700 bg-zinc-800 text-white rounded-lg p-2"
-            />
-            <button className="bg-blue-600 text-white p-2 rounded-lg ml-2 hover:bg-blue-500">
-              Search
-            </button>
-          </div>
-          <div>
-            <button
-              className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500"
-              onClick={openAddModal}
-            >
-              Add Employee
-            </button>
-            <div className="relative ml-4">
-              <button
-                onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
-              >
-                Admin Profile
-              </button>
-              {isProfileDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-zinc-800 rounded-lg shadow-lg">
-                  <a href="#" className="block px-4 py-2 text-sm text-zinc-200">
-                    Profile
-                  </a>
-                  <a href="#" className="block px-4 py-2 text-sm text-zinc-200">
-                    Settings
-                  </a>
-                  <a href="#" className="block px-4 py-2 text-sm text-zinc-200">
-                    Logout
-                  </a>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-
         {activeSection === "employees" && (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <OverviewCard title="Total Employees" value={employees.length} />
-              <OverviewCard
-                title="Active Employees"
-                value={
-                  employees.filter((emp) => emp.status === "Active").length
-                }
+            <header className="flex justify-between items-center mb-4">
+              <input
+                type="text"
+                placeholder="Search..."
+                className="border border-zinc-700 bg-zinc-800 text-white rounded-lg p-2"
               />
-              <OverviewCard title="Projects" value={42} />
-              <OverviewCard title="Inquiries" value={15} />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              <div className="bg-zinc-800 p-4 rounded-lg">
-                <h2 className="text-lg font-bold mb-4">Notifications</h2>
-                <ul className="list-disc list-inside">
-                  {notifications.map((note, index) => (
-                    <li key={index} className="mb-2">
-                      {note}
-                    </li>
-                  ))}
-                </ul>
+              <div className="flex space-x-2">
+                <button
+                  className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500"
+                  onClick={openAddModal}
+                >
+                  Add Employee
+                </button>
               </div>
-
-              <div className="bg-zinc-800 p-4 rounded-lg">
-                <h2 className="text-lg font-bold mb-4">Recent Activities</h2>
-                <ul className="list-none">
-                  {activities.map((activity, index) => (
-                    <li key={index} className="mb-2">
-                      {activity}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
+            </header>
 
             <table className="min-w-full bg-zinc-800 rounded-lg">
               <thead>
@@ -279,7 +280,7 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {employees.map((employee) => (
+                {currentEmployees.map((employee) => (
                   <tr key={employee.email}>
                     <td className="py-2 px-4 border-b border-zinc-700">
                       {employee.name}
@@ -323,6 +324,27 @@ export default function Dashboard() {
                 ))}
               </tbody>
             </table>
+
+            {/* Pagination Controls */}
+            <div className="flex justify-between items-center mt-4">
+              <button
+                className="bg-zinc-700 text-white px-3 py-1 rounded-md disabled:opacity-50"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                className="bg-zinc-700 text-white px-3 py-1 rounded-md disabled:opacity-50"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
+            </div>
           </>
         )}
 
@@ -347,11 +369,11 @@ export default function Dashboard() {
                 <strong>Status:</strong> {selectedEmployee.status}
               </p>
               <p>
-                <strong>Profile:</strong> {selectedEmployee.profileType}
+                <strong>Profile Type:</strong> {selectedEmployee.profileType}
               </p>
               <button
                 onClick={closeDetailModal}
-                className="mt-4 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500"
+                className="mt-4 bg-blue-600 text-white p-2 rounded-lg"
               >
                 Close
               </button>
@@ -363,190 +385,182 @@ export default function Dashboard() {
         {isEditModalOpen && editableEmployee && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <form
-              onSubmit={handleEditSubmit}
               className="bg-zinc-800 p-6 rounded-lg w-1/2"
+              onSubmit={handleEditSubmit}
             >
               <h2 className="text-xl font-bold mb-4">Edit Employee</h2>
-              <label className="block mb-2">
-                Name
-                <input
-                  type="text"
-                  name="name"
-                  value={editableEmployee.name}
-                  onChange={handleEditChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Email
-                <input
-                  type="email"
-                  name="email"
-                  value={editableEmployee.email}
-                  onChange={handleEditChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Contact
-                <input
-                  type="text"
-                  name="contact"
-                  value={editableEmployee.contact}
-                  onChange={handleEditChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Position
-                <input
-                  type="text"
-                  name="position"
-                  value={editableEmployee.position}
-                  onChange={handleEditChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Status
-                <input
-                  type="text"
-                  name="status"
-                  value={editableEmployee.status}
-                  onChange={handleEditChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Profile
-                <input
-                  type="text"
-                  name="profileType"
-                  value={editableEmployee.profileType}
-                  onChange={handleEditChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500"
-              >
-                Save Changes
-              </button>
-              <button
-                type="button"
-                onClick={closeEditModal}
-                className="ml-2 bg-red-600 text-white p-2 rounded-lg hover:bg-red-500"
-              >
-                Cancel
-              </button>
+              <input
+                type="text"
+                name="name"
+                value={editableEmployee.name}
+                onChange={handleEditChange}
+                placeholder="Name"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                value={editableEmployee.email}
+                onChange={handleEditChange}
+                placeholder="Email"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="contact"
+                value={editableEmployee.contact}
+                onChange={handleEditChange}
+                placeholder="Contact"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="position"
+                value={editableEmployee.position}
+                onChange={handleEditChange}
+                placeholder="Position"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="status"
+                value={editableEmployee.status}
+                onChange={handleEditChange}
+                placeholder="Status"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="profileType"
+                value={editableEmployee.profileType}
+                onChange={handleEditChange}
+                placeholder="Profile Type"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <div className="flex justify-between">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white p-2 rounded-lg"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={closeEditModal}
+                  className="bg-red-600 text-white p-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
           </div>
         )}
 
-        {/* Delete Confirmation */}
+        {/* Delete Confirmation Modal */}
         {isDeleteConfirmOpen && employeeToDelete && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-zinc-800 p-6 rounded-lg w-1/2">
-              <h2 className="text-xl font-bold mb-4">Confirm Deletion</h2>
+            <div className="bg-zinc-800 p-6 rounded-lg w-1/3">
+              <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
               <p>Are you sure you want to delete {employeeToDelete.name}?</p>
-              <button
-                onClick={handleDeleteConfirm}
-                className="mt-4 bg-red-600 text-white p-2 rounded-lg hover:bg-red-500"
-              >
-                Delete
-              </button>
-              <button
-                onClick={closeDeleteConfirm}
-                className="ml-2 bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500"
-              >
-                Cancel
-              </button>
+              <div className="flex justify-between mt-4">
+                <button
+                  onClick={handleDeleteConfirm}
+                  className="bg-red-600 text-white p-2 rounded-lg"
+                >
+                  Delete
+                </button>
+                <button
+                  onClick={closeDeleteConfirm}
+                  className="bg-gray-600 text-white p-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Add Employee Modal */}
+        {/* Add Modal */}
         {isAddModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <form
-              onSubmit={handleAddSubmit}
               className="bg-zinc-800 p-6 rounded-lg w-1/2"
+              onSubmit={handleAddSubmit}
             >
-              <h2 className="text-xl font-bold mb-4">Add New Employee</h2>
-              <label className="block mb-2">
-                Name
-                <input
-                  type="text"
-                  name="name"
-                  value={newEmployee.name}
-                  onChange={handleAddChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Email
-                <input
-                  type="email"
-                  name="email"
-                  value={newEmployee.email}
-                  onChange={handleAddChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Contact
-                <input
-                  type="text"
-                  name="contact"
-                  value={newEmployee.contact}
-                  onChange={handleAddChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Position
-                <input
-                  type="text"
-                  name="position"
-                  value={newEmployee.position}
-                  onChange={handleAddChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Status
-                <input
-                  type="text"
-                  name="status"
-                  value={newEmployee.status}
-                  onChange={handleAddChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <label className="block mb-2">
-                Profile
-                <input
-                  type="text"
-                  name="profileType"
-                  value={newEmployee.profileType}
-                  onChange={handleAddChange}
-                  className="block w-full mt-1 bg-zinc-700 text-white border border-zinc-600 rounded-lg p-2"
-                />
-              </label>
-              <button
-                type="submit"
-                className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-500"
-              >
-                Add Employee
-              </button>
-              <button
-                type="button"
-                onClick={closeAddModal}
-                className="ml-2 bg-red-600 text-white p-2 rounded-lg hover:bg-red-500"
-              >
-                Cancel
-              </button>
+              <h2 className="text-xl font-bold mb-4">Add Employee</h2>
+              <input
+                type="text"
+                name="name"
+                value={newEmployee.name}
+                onChange={handleAddChange}
+                placeholder="Name"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="email"
+                name="email"
+                value={newEmployee.email}
+                onChange={handleAddChange}
+                placeholder="Email"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="contact"
+                value={newEmployee.contact}
+                onChange={handleAddChange}
+                placeholder="Contact"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="position"
+                value={newEmployee.position}
+                onChange={handleAddChange}
+                placeholder="Position"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="status"
+                value={newEmployee.status}
+                onChange={handleAddChange}
+                placeholder="Status"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <input
+                type="text"
+                name="profileType"
+                value={newEmployee.profileType}
+                onChange={handleAddChange}
+                placeholder="Profile Type"
+                className="border border-zinc-700 bg-zinc-700 text-white rounded-lg p-2 mb-4 w-full"
+                required
+              />
+              <div className="flex justify-between">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white p-2 rounded-lg"
+                >
+                  Add
+                </button>
+                <button
+                  onClick={closeAddModal}
+                  className="bg-red-600 text-white p-2 rounded-lg"
+                >
+                  Cancel
+                </button>
+              </div>
             </form>
           </div>
         )}
